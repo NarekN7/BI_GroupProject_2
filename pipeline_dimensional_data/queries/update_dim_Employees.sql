@@ -1,10 +1,15 @@
 SET IDENTITY_INSERT DimEmployees ON;
 
+WITH FilteredStaging AS (
+    SELECT *,
+           ROW_NUMBER() OVER (PARTITION BY staging_raw_id ORDER BY staging_raw_id) AS RowNum
+    FROM staging_raw_Employees
+)
 MERGE INTO DimEmployees AS dim
 USING (
     SELECT
         src.staging_raw_id,
-        sor.SurrogateKey AS EmployeeSK,
+        ISNULL(sor.SurrogateKey, src.staging_raw_id) AS EmployeeSK,
         src.EmployeeID,
         src.LastName,
         src.FirstName,
@@ -22,9 +27,11 @@ USING (
         src.Notes,
         src.ReportsTo,
         src.PhotoPath,
-        0 AS IsDeleted    FROM staging_raw_Employees AS src
+        0 AS IsDeleted
+    FROM FilteredStaging AS src
     LEFT JOIN Dim_SOR AS sor
         ON sor.TableName = 'Employees' AND sor.SurrogateKey = src.staging_raw_id
+    WHERE RowNum = 1
 ) AS staging
 ON dim.EmployeeSK = staging.EmployeeSK
 

@@ -1,13 +1,13 @@
-DROP TABLE IF EXISTS staging_raw_Categories;
-DROP TABLE IF EXISTS staging_raw_Customers;
-DROP TABLE IF EXISTS staging_raw_Employees;
-DROP TABLE IF EXISTS staging_raw_OrderDetails;
-DROP TABLE IF EXISTS staging_raw_Orders;
-DROP TABLE IF EXISTS staging_raw_Products;
 DROP TABLE IF EXISTS staging_raw_Region;
 DROP TABLE IF EXISTS staging_raw_Shippers;
 DROP TABLE IF EXISTS staging_raw_Suppliers;
+DROP TABLE IF EXISTS staging_raw_Categories;
 DROP TABLE IF EXISTS staging_raw_Territories;
+DROP TABLE IF EXISTS staging_raw_Customers;
+DROP TABLE IF EXISTS staging_raw_Employees;
+DROP TABLE IF EXISTS staging_raw_Orders;
+DROP TABLE IF EXISTS staging_raw_Products;
+DROP TABLE IF EXISTS staging_raw_OrderDetails;
 
 
 CREATE TABLE staging_raw_Region (
@@ -152,3 +152,130 @@ CREATE TABLE staging_raw_OrderDetails (
     CONSTRAINT FK_OrderDetails_OrderID FOREIGN KEY (OrderID) REFERENCES staging_raw_Orders(OrderID),
     CONSTRAINT FK_OrderDetails_ProductID FOREIGN KEY (ProductID) REFERENCES staging_raw_Products(ProductID)
 );
+
+
+
+BULK INSERT staging_raw_Categories 
+FROM 'C:\Users\aregk\OneDrive\Documents\Areg Khachatryan\AUA\AUA 2024-2025 1\Business Intelligence\Project 2\infrastructure_initiation\raw_data_source.xlsx' 
+WITH ( 
+    FORMAT = 'CSV', 
+    FIRSTROW = 2, 
+    FIELDTERMINATOR = ',', 
+    ROWTERMINATOR = '\n', 
+    TABLOCK 
+);
+
+
+
+
+
+BULK INSERT staging_raw_Categories
+FROM 'C:\\Users\\aregk\\OneDrive\\Documents\\Areg Khachatryan\\AUA\\AUA 2024-2025 1\\Business Intelligence\\Project 2\\infrastructure_initiation\\SOURCES\\Categories.csv'
+WITH (
+    FIELDTERMINATOR = ',', -- Fields are separated by commas
+    ROWTERMINATOR = '\n',  -- Rows are terminated by newlines
+    FIRSTROW = 2           -- Skip the header row
+);
+
+
+
+BULK INSERT staging_raw_Region 
+FROM 'raw_data_source.xlsx/Region.csv' 
+WITH ( 
+    FORMAT = 'CSV', 
+    FIRSTROW = 2, 
+    FIELDTERMINATOR = ',', 
+    ROWTERMINATOR = '\n', 
+    TABLOCK 
+); 
+ 
+BULK INSERT staging_raw_Shippers 
+FROM 'raw_data_source.xlsx/Shippers.csv' 
+WITH ( 
+    FORMAT = 'CSV', 
+    FIRSTROW = 2, 
+    FIELDTERMINATOR = ',', 
+    ROWTERMINATOR = '\n', 
+    TABLOCK 
+); 
+ 
+BULK INSERT staging_raw_Suppliers 
+FROM 'raw_data_source.xlsx/Suppliers.csv' 
+WITH ( 
+    FORMAT = 'CSV', 
+    FIRSTROW = 2, 
+    FIELDTERMINATOR = ',', 
+    ROWTERMINATOR = '\n', 
+    TABLOCK 
+); 
+ 
+BULK INSERT staging_raw_Categories 
+FROM 'raw_data_source.xlsx/Categories.csv' 
+WITH ( 
+    FORMAT = 'CSV', 
+    FIRSTROW = 2, 
+    FIELDTERMINATOR = ',', 
+    ROWTERMINATOR = '\n', 
+    TABLOCK 
+); 
+ 
+BULK INSERT staging_raw_Territories 
+FROM 'raw_data_source.xlsx/Territories.csv' 
+WITH ( 
+    FORMAT = 'CSV', 
+    FIRSTROW = 2, 
+    FIELDTERMINATOR = ',', 
+    ROWTERMINATOR = '\n', 
+    TABLOCK 
+); 
+ 
+BULK INSERT staging_raw_Customers 
+FROM 'raw_data_source.xlsx/Customers.csv' 
+WITH ( 
+    FORMAT = 'CSV', 
+    FIRSTROW = 2, 
+    FIELDTERMINATOR = ',', 
+    ROWTERMINATOR = '\n', 
+    TABLOCK 
+); 
+ 
+BULK INSERT staging_raw_Employees 
+FROM 'raw_data_source.xlsx/Employees.csv' 
+WITH ( 
+    FORMAT = 'CSV', 
+    FIRSTROW = 2, 
+    FIELDTERMINATOR = ',', 
+    ROWTERMINATOR = '\n', 
+    TABLOCK 
+); 
+ 
+BULK INSERT staging_raw_Orders 
+FROM 'raw_data_source.xlsx/Orders.csv' 
+WITH ( 
+    FORMAT = 'CSV', 
+    FIRSTROW = 2, 
+    FIELDTERMINATOR = ',', 
+    ROWTERMINATOR = '\n', 
+    TABLOCK 
+); 
+ 
+BULK INSERT staging_raw_Products 
+FROM 'raw_data_source.xlsx/Products.csv' 
+WITH ( 
+    FORMAT = 'CSV', 
+    FIRSTROW = 2, 
+    FIELDTERMINATOR = ',', 
+    ROWTERMINATOR = '\n', 
+    TABLOCK 
+); 
+ 
+BULK INSERT staging_raw_OrderDetails 
+FROM 'raw_data_source.xlsx/OrderDetails.csv' 
+WITH ( 
+    FORMAT = 'CSV', 
+    FIRSTROW = 2, 
+    FIELDTERMINATOR = ',', 
+    ROWTERMINATOR = '\n', 
+    TABLOCK 
+);
+

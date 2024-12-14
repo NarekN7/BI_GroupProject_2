@@ -1,38 +1,48 @@
 import os
 import sys
 from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from utils import *
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+sys.path.insert(0, str(Path(os.getcwd()).resolve().parent))
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from utils import get_db_connection, execute_sql_file
+
+
 print(f"Script's BASE_DIR: {BASE_DIR}")
 
 
+print(get_db_connection())
 def run_task(connection, sql_file, params):
+    """
+    Runs a single task by executing a SQL file with the given parameters.
+    :param connection: Database connection object.
+    :param sql_file: Path to the SQL file to execute.
+    :param params: Dictionary of parameters to pass to the SQL script.
+    :return: Task status dictionary.
+    """
     try:
+        # Construct the full path for the SQL file
         sql_file_path = os.path.join(BASE_DIR, sql_file)
-        with open(sql_file_path, 'r', encoding='utf-8') as f:
-            sql_script = f.read()
-        print(f"Executing SQL from {sql_file}:")
-        print(sql_script[:500])
 
+        # Execute the SQL file
         execute_sql_file(connection, sql_file_path, params)
+
         return {"success": True, "message": f"Task for {sql_file} completed successfully."}
     except Exception as e:
         return {"success": False, "error": str(e)}
 
 
+
 def create_dimensional_tables(connection):
-    sql_file = "queries/create_dimensional_tables.sql"
-    return run_task(connection, sql_file, params={})
-
-
-def ingest_data_into_fact(connection, start_date, end_date):
     """
     Creates the tables for the dimensional database.
     :param connection: Database connection object.
     :return: Task status dictionary.
     """
-    sql_file = "queries/update_fact.sql"
-    params = {"@StartDate": start_date, "@EndDate": end_date}
+    sql_file = "queries/create_dimensional_tables.sql"
+    params = {}
     return run_task(connection, sql_file, params)
 
 
@@ -69,21 +79,20 @@ def ingest_data_into_dimensions(connection):
     :return: Task status dictionary.
     """
     dimension_files = [
-        "pipeline_dimensional_data/queries/update_dim_Categories.sql",
-        "pipeline_dimensional_data/queries/update_dim_Customers.sql",
-        "pipeline_dimensional_data/queries/update_dim_Employees.sql",
-        "pipeline_dimensional_data/queries/update_dim_Products.sql",
-        "pipeline_dimensional_data/queries/update_dim_Region.sql",
-        "pipeline_dimensional_data/queries/update_dim_Shippers.sql",
-        "pipeline_dimensional_data/queries/update_dim_Suppliers.sql",
-        "pipeline_dimensional_data/queries/update_dim_Territories.sql",
-        "pipeline_dimensional_data/queries/update_fact.sql"
+        "queries/update_dim_categories.sql",
+        "queries/update_dim_customers.sql",
+        "queries/update_dim_employees.sql",
+        "queries/update_dim_products.sql",
+        "queries/update_dim_region.sql",
+        "queries/update_dim_shippers.sql",
+        "queries/update_dim_suppliers.sql",
+        "queries/update_dim_territories.sql",
     ]
 
     for sql_file in dimension_files:
         result = run_task(connection, sql_file, params={})
         if not result["success"]:
-            return result
+            return result  # Stop and return error if any dimension fails
 
     return {"success": True, "message": "All dimension tables updated successfully."}
 
@@ -96,19 +105,27 @@ def pipeline_execution(start_date, end_date):
     :return: Overall pipeline status.
     """
     try:
-        connection = get_db_connection()
+        connection = get_db_connection()  # Correctly indented line
 
-        tasks = [
-            ingest_data_into_dimensions,
-            lambda conn: ingest_data_into_fact(conn, start_date, end_date),
-            lambda conn: ingest_data_into_fact_error(conn, start_date, end_date)
-        ]
+        # Step 1: Create dimensional tables
+        result = create_dimensional_tables(connection)
+        if not result["success"]:
+            return result
 
-        for task in tasks:
-            result = task(connection)
-            if not result["success"]:
-                connection.close()
-                return result
+        # Step 2: Ingest data into dimension tables
+        result = ingest_data_into_dimensions(connection)
+        if not result["success"]:
+            return result
+
+        # Step 3: Ingest data into the fact table
+        result = ingest_data_into_fact(connection, start_date, end_date)
+        if not result["success"]:
+            return result
+
+        # Step 4: Ingest faulty rows into the fact error table
+        result = ingest_data_into_fact_error(connection, start_date, end_date)
+        if not result["success"]:
+            return result
 
         connection.close()
         return {"success": True, "message": "Pipeline executed successfully."}
@@ -116,6 +133,7 @@ def pipeline_execution(start_date, end_date):
         return {"success": False, "error": str(e)}
 
 
+# Example execution
 if __name__ == "__main__":
     START_DATE = "2024-01-01"
     END_DATE = "2024-12-31"
@@ -125,3 +143,4 @@ if __name__ == "__main__":
         print(pipeline_result["message"])
     else:
         print(f"Pipeline failed: {pipeline_result['error']}")
+print(run_task())

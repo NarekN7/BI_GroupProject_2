@@ -1,10 +1,15 @@
 SET IDENTITY_INSERT DimProducts ON;
 
+WITH FilteredStaging AS (
+    SELECT *,
+           ROW_NUMBER() OVER (PARTITION BY staging_raw_id ORDER BY staging_raw_id) AS RowNum
+    FROM staging_raw_Products
+)
 MERGE INTO DimProducts AS dim
 USING (
     SELECT
         src.staging_raw_id,
-        sor.SurrogateKey AS ProductSK,
+        ISNULL(sor.SurrogateKey, src.staging_raw_id) AS ProductSK, 
         src.ProductID,
         src.ProductName,
         src.SupplierID,
@@ -15,9 +20,10 @@ USING (
         src.UnitsOnOrder,
         src.ReorderLevel,
         src.Discontinued
-    FROM staging_raw_Products AS src
+    FROM FilteredStaging AS src
     LEFT JOIN Dim_SOR AS sor
         ON sor.TableName = 'Products' AND sor.SurrogateKey = src.staging_raw_id
+    WHERE RowNum = 1 
 ) AS staging
 ON dim.ProductSK = staging.ProductSK
 

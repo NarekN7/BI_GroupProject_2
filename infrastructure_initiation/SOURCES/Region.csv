@@ -1,0 +1,5 @@
+RegionID,RegionDescription,RegionCategory,RegionImportance
+1,Eastern,Gold,High
+2,Western,Silver,Medium
+3,Northern,Silver,Medium
+4,Southern,Bronze,Low

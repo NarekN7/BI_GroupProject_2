@@ -1,19 +1,25 @@
 SET IDENTITY_INSERT DimTerritories ON;
 
+WITH FilteredStaging AS (
+    SELECT *,
+           ROW_NUMBER() OVER (PARTITION BY staging_raw_id ORDER BY staging_raw_id) AS RowNum
+    FROM staging_raw_Territories
+)
 MERGE INTO DimTerritories AS dim
 USING (
     SELECT
         src.staging_raw_id,
-        sor.SurrogateKey AS TerritorySK,
+        ISNULL(sor.SurrogateKey, src.staging_raw_id) AS TerritorySK, 
         src.TerritoryID,
         src.TerritoryDescription,
         src.TerritoryCode,
         src.RegionID,
         GETDATE() AS StartDate,
         NULL AS EndDate
-    FROM staging_raw_Territories AS src
+    FROM FilteredStaging AS src
     LEFT JOIN Dim_SOR AS sor
         ON sor.TableName = 'Territories' AND sor.SurrogateKey = src.staging_raw_id
+    WHERE RowNum = 1 
 ) AS staging
 ON dim.TerritorySK = staging.TerritorySK
 

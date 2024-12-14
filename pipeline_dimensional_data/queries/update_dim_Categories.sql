@@ -4,11 +4,11 @@ MERGE INTO DimCategories AS dim
 USING (
     SELECT
         src.staging_raw_id,
-        sor.SurrogateKey AS CategorySK,
+        ISNULL(sor.SurrogateKey, src.staging_raw_id) AS CategorySK, 
         src.CategoryID,
         src.CategoryName,
         src.Description
-    FROM staging_raw_Categories AS src
+    FROM dbo.staging_raw_Categories AS src
     LEFT JOIN Dim_SOR AS sor
         ON sor.TableName = 'Categories' AND sor.SurrogateKey = src.staging_raw_id
 ) AS staging
@@ -24,3 +24,6 @@ WHEN NOT MATCHED THEN
     VALUES (staging.CategorySK, staging.CategoryID, staging.CategoryName, staging.Description);
 
 SET IDENTITY_INSERT DimCategories OFF;
+
+
+SELECT * FROM DimCategories;

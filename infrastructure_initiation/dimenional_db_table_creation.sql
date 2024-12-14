@@ -1,3 +1,4 @@
+
 DROP TABLE IF EXISTS DimCategories;
 DROP TABLE IF EXISTS DimCustomers;
 DROP TABLE IF EXISTS DimEmployees;
@@ -10,8 +11,8 @@ DROP TABLE IF EXISTS FactOrders;
 DROP TABLE IF EXISTS Dim_SOR;
 
 CREATE TABLE DimCategories (
-    CategorySK INT IDENTITY(1,1) PRIMARY KEY,
-    CategoryID INT NOT NULL,
+	CategorySK INT IDENTITY(1,1) PRIMARY KEY,
+    CategoryID INT NOT NULL,	
     CategoryName NVARCHAR(50) NOT NULL, 
     Description NVARCHAR(255)
 );
@@ -141,5 +142,54 @@ CREATE TABLE FactOrders (
 
 CREATE TABLE Dim_SOR (
     TableName NVARCHAR(100) PRIMARY KEY,
-    SurrogateKey INT NOT NULL
+    SurrogateKey NVARCHAR(100) NOT NULL
 );
+
+INSERT INTO dbo.Dim_SOR (TableName, SurrogateKey)
+    VALUES
+        ('Staging_Categories', 'CategoryKey'),
+        ('Staging_Customers', 'CustomerKey'),
+        ('Staging_Employees', 'EmployeeKey'),
+        ('Staging_Products', 'ProductKey'),
+        ('Staging_Region', 'RegionKey'),
+        ('Staging_Shippers', 'ShipperKey'),
+        ('Staging_Suppliers', 'SupplierKey'),
+        ('Staging_Territories', 'TerritoryKey');
+    
+-- select * from Dim_SOR;
+-- BULK INSERT DimCategories
+-- FROM 'C:\\Users\\aregk\\OneDrive\\Documents\\Areg Khachatryan\\AUA\\AUA 2024-2025 1\\Business Intelligence\\Project 2\\infrastructure_initiation\\SOURCES\\Categories.csv'
+-- WITH (
+--     FIELDTERMINATOR = ',',
+--     ROWTERMINATOR = '\n',
+--     FIRSTROW = 2
+-- );
+
+-- select * from DimCategories;
+
+-- sp_configure 'show advanced options', 1;
+-- RECONFIGURE;
+-- sp_configure 'Ad Hoc Distributed Queries', 1;
+-- RECONFIGURE;
+
+
+-- SELECT * 
+-- INTO DimCategories -- Temporary table to hold data
+-- FROM OPENROWSET(
+--     'Microsoft.ACE.OLEDB.12.0',
+--     'Excel 12.0 Xml;HDR=YES;Database=C:\\Users\\aregk\\OneDrive\\Documents\\Areg Khachatryan\\AUA\\AUA 2024-2025 1\\Business Intelligence\\Project 2\\infrastructure_initiation\\SOURCES\\Categories.xlsx',
+--     'SELECT * FROM Categories'
+-- );
+
+-- INSERT INTO DimCategories (CategoryID, CategoryName, Description)
+-- SELECT CAST(ID AS INT), CategoryName, Description
+-- FROM OPENROWSET(
+--     BULK 'C:\\Users\\aregk\\OneDrive\\Documents\\Areg Khachatryan\\AUA\\AUA 2024-2025 1\\Business Intelligence\\Project 2\\infrastructure_initiation\\SOURCES\\Categories.xlsx',
+--     FORMATFILE = 'C:\\Users\\aregk\\OneDrive\\Documents\\Areg Khachatryan\\AUA\\AUA 2024-2025 1\\Business Intelligence\\Project 2\\infrastructure_initiation\\SOURCES\\Categories.fmt'
+-- ) AS DataFile;
+
+-- SELECT CAST(ID AS INT) AS CategoryID, CategoryName, Description
+-- FROM OPENROWSET(
+--     BULK 'C:\\Users\\aregk\\OneDrive\\Documents\\Areg Khachatryan\\AUA\\AUA 2024-2025 1\\Business Intelligence\\Project 2\\infrastructure_initiation\\SOURCES\\Categories.csv',
+--     FORMATFILE = 'C:\\Users\\aregk\\OneDrive\\Documents\\Areg Khachatryan\\AUA\\AUA 2024-2025 1\\Business Intelligence\\Project 2\\infrastructure_initiation\\SOURCES\\Categories.fmt'
+-- ) AS DataFile;

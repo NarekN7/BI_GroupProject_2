@@ -1,10 +1,15 @@
 SET IDENTITY_INSERT DimSuppliers ON;
 
+WITH FilteredStaging AS (
+    SELECT *,
+           ROW_NUMBER() OVER (PARTITION BY staging_raw_id ORDER BY staging_raw_id) AS RowNum
+    FROM staging_raw_Suppliers
+)
 MERGE INTO DimSuppliers AS dim
 USING (
     SELECT
         src.staging_raw_id,
-        sor.SurrogateKey AS SupplierSK,
+        ISNULL(sor.SurrogateKey, src.staging_raw_id) AS SupplierSK, 
         src.SupplierID,
         src.CompanyName,
         src.ContactName,
@@ -19,9 +24,10 @@ USING (
         src.HomePage,
         NULL AS CurrentContactName,
         NULL AS PreviousContactName
-    FROM staging_raw_Suppliers AS src
+    FROM FilteredStaging AS src
     LEFT JOIN Dim_SOR AS sor
         ON sor.TableName = 'Suppliers' AND sor.SurrogateKey = src.staging_raw_id
+    WHERE RowNum = 1 
 ) AS staging
 ON dim.SupplierSK = staging.SupplierSK
 

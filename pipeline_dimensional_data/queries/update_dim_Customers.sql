@@ -4,7 +4,7 @@ MERGE INTO DimCustomers AS dim
 USING (
     SELECT
         src.staging_raw_id,
-        sor.SurrogateKey AS CustomerSK,
+        ISNULL(sor.SurrogateKey, src.staging_raw_id) AS CustomerSK, -- Use `staging_raw_id` if `SurrogateKey` is NULL
         src.CustomerID,
         src.CompanyName,
         src.ContactName,
@@ -45,3 +45,4 @@ WHEN NOT MATCHED THEN
     VALUES (staging.CustomerSK, staging.CustomerID, staging.CompanyName, staging.ContactName, staging.ContactTitle, staging.Address, staging.City, staging.Region, staging.PostalCode, staging.Country, staging.Phone, staging.Fax, staging.StartDate, staging.EndDate, staging.IsCurrent);
 
 SET IDENTITY_INSERT DimCustomers OFF;
+

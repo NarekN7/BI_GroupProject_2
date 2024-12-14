@@ -1,10 +1,4 @@
 from logging import setup_logger
-
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from utils import *
-
 from pipeline_dimensional_data.tasks import (
     create_dimensional_tables,
     ingest_data_into_dimensions,

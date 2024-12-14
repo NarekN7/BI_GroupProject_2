@@ -1,0 +1,54 @@
+TerritoryID,TerritoryDescription,TerritoryCode,RegionID
+1581,Westboro,WE,1
+1730,Bedford,BE,1
+1833,Georgetow,GE,1
+2116,Boston,BO,1
+2139,Cambridge,CA,1
+2184,Braintree,BR,1
+2903,Providence,PR,1
+3049,Hollis,HO,3
+3801,Portsmouth,PO,3
+6897,Wilton,WI,1
+7960,Morristown,MO,1
+8837,Edison,ED,1
+10019,New York,NE,1
+10038,New York,NE,1
+11747,Mellvile,ME,1
+14450,Fairport,FA,1
+19428,Philadelphia,PH,3
+19713,Neward,NE,1
+20852,Rockville,RO,1
+27403,Greensboro,GR,1
+27511,Cary,CA,1
+29202,Columbia,CO,4
+30346,Atlanta,AT,4
+31406,Savannah,SA,4
+32859,Orlando,OR,4
+33607,Tampa,TA,4
+40222,Louisville,LO,1
+44122,Beachwood,BE,3
+45839,Findlay,FI,3
+48075,Southfield,SO,3
+48084,Troy,TR,3
+48304,Bloomfield Hills,BL,3
+53404,Racine,RA,3
+55113,Roseville,RO,3
+55439,Minneapolis,MI,3
+60179,Hoffman Estates,HO,2
+60601,Chicago,CH,2
+72716,Bentonville,BE,4
+75234,Dallas,DA,4
+78759,Austin,AU,4
+80202,Denver,DE,2
+80909,Colorado Springs,CO,2
+85014,Phoenix,PH,2
+85251,Scottsdale,SC,2
+90405,Santa Monica,SA,2
+94025,Menlo Park,ME,2
+94105,San Francisco,SA,2
+95008,Campbell,CA,2
+95054,Santa Clara,SA,2
+95060,Santa Cruz,SA,2
+98004,Bellevue,BE,2
+98052,Redmond,RE,2
+98104,Seattle,SE,2

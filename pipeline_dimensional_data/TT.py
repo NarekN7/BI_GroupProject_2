@@ -1,11 +1,6 @@
-import sys
-from pathlib import Path
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from pipeline_dimensional_data.flow import DimensionalDataFlow
-from utils import *
 
-
-if __name__ == "__main__":
+if name == "__main__":
     START_DATE = "2024-01-01"
     END_DATE = "2024-12-31"
 
