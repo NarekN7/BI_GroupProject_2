@@ -1,6 +1,11 @@
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from pipeline_dimensional_data.flow import DimensionalDataFlow
+from utils import *
 
-if name == "__main__":
+
+if __name__ == "__main__":
     START_DATE = "2024-01-01"
     END_DATE = "2024-12-31"
 
@@ -15,5 +20,7 @@ if name == "__main__":
     #     print(f"Pipeline executed successfully with Execution ID: {result['execution_id']}")
     # else:
     #     print(f"Pipeline failed with Execution ID: {result['execution_id']}. Error: {result['error']}")
+
+
 
 

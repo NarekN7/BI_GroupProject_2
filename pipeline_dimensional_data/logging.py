@@ -1,5 +1,6 @@
-import logging
 import os
+import logging
+
 
 def setup_logger(execution_id, log_file="logs/logs_dimensional_data_pipeline.txt"):
     """
@@ -22,6 +23,7 @@ def setup_logger(execution_id, log_file="logs/logs_dimensional_data_pipeline.txt
         fmt="%(asctime)s - %(levelname)s - Execution ID: %(execution_id)s - %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S"
     )
+
 
     # Add a file handler
     file_handler = logging.FileHandler(log_file)
